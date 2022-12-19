@@ -1,10 +1,5 @@
-# pip3 install requests
 import requests
-
-# // pip3 install beautifulsoup4
 from bs4 import BeautifulSoup
-
-# // pip3 install pandas  
 import pandas as pd
 
 books = []
