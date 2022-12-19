@@ -4,6 +4,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
 from openpyxl import Workbook
 import pandas as pd
+import excel2json
+import pandas
 
 driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
 driver.maximize_window()
@@ -28,12 +30,38 @@ duration = driver.find_elements(By.XPATH,"//span[contains(@class,'jsx-3847118977
 for z in duration:
     print(z.text)
 
-#scholarship data from table
-driver.find_element(By.XPATH, "//a[text()='Scholarship']").click()
+course_list = []
+fees_list = []
+duration_list= []
 
-row_count = len(driver.find_elements(By.XPATH,"//*[@id='__next']/div[2]/section/div/div[1]/div[3]/div[1]/div[1]/div/div[2]/div/div/div[1]/table/tbody/tr"))
+for c in courses:
+    course_list.append(c.text)
 
-col_count = len(driver.find_elements(By.XPATH,"//*[@id='__next']/div[2]/section/div/div[1]/div[3]/div[1]/div[1]/div/div[2]/div/div/div[1]/table/tbody/tr[2]/td"))
-print(row_count)
-print(col_count)
+for f in fees:
+    fees_list.append(f.text)
 
+for d in duration:
+    duration_list.append(d.text)
+
+finallist = zip(course_list,fees_list,duration_list)
+
+wb=Workbook()
+sheet1=wb.active
+sheet1.title="collegeduniyawebscraping"
+sheet1.append(["courses","fees","duration"])
+
+for x in list(finallist):
+    sheet1.append(x)
+
+wb.save("collegeduniyawebscraping.xlsx")
+
+
+
+excel_data_df = pandas.read_excel('collegeduniyawebscraping.xlsx', sheet_name='collegeduniyawebscraping')
+
+json_str = excel_data_df.to_json()
+
+with open("sample.json", "w") as outfile:
+    outfile.write(json_str)
+
+print('Excel Sheet to JSON:\n', json_str)
