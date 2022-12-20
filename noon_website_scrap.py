@@ -15,7 +15,7 @@ for i in range(2,67):
     response = requests.get(url2, headers=header)
 
     soup = BeautifulSoup(response.content, "lxml")
-
+ 
     div = soup.find('div',class_="sc-2e5fceb-7 iFjxuh grid")
     
     var1 = "https://www.noon.com"
@@ -23,6 +23,7 @@ for i in range(2,67):
     
     for i in range(0,51):
         try:
+
             #product url
             product_url = div.find_all('a')[i].get('href')
             product_url_og=("".join([var1,product_url]))
@@ -40,8 +41,8 @@ for i in range(2,67):
             
             #product price
             price = soup3.find('div',class_="priceNow").text
-            product_price = ''.join(filter(lambda i: i.isdigit(), price))
-           # print(float(product_price))
+           # product_price = ''.join(filter(lambda i: i.isdigit(), price))
+           # print("price:",price[4:10])
             
             #discount
             saving = soup3.find('div',class_="priceSaving")
@@ -66,10 +67,6 @@ for i in range(2,67):
             currency = soup3.find('div',class_="priceNow").text
           #  print(currency[0:3])
 
-            #shipping fee
-            shipping_fee = soup3.find('div',class_="sc-7a158dd5-26 kgYUua")
-          #  print("shipping fee : ",shipping_fee)
-
             #position
             position = soup3.find('div',class_="sc-54ed93c4-2 elMEYP").text
           #  print("position : ",position)
@@ -83,27 +80,30 @@ for i in range(2,67):
             market_place = market.find('img').attrs['alt']
            # print("market : ",market_place)
 
-            #stocks left
-            try:
-                stocks = soup3.find('div',class_="sc-7705b45-0 eDpeUK").text
-                stocks_left = ''.join(filter(lambda i: i.isdigit(), stocks_left))
-              #  print("stocks left : ",stocks_left)
-            except:
-                print("no data available")
+           # stocks left
+            # try:
+            #     stocks = soup3.find('div',class_="sc-7705b45-0 eDpeUK").text
+            #     stocks_left = ''.join(filter(lambda i: i.isdigit(), stocks_left))
+            #   #  print("stocks left : ",stocks_left)
+            # except:
+            #     print("no data available")
+            #     ct = datetime.datetime.now()
+            #     data.append([ct,product_url_og,product_name,model_no,price[4:10],discount_perc,soldby,rating,p_rating,currency[0:3],position,brand,market_place,stocks_left])
+
             
             #time data generation
             ct = datetime.datetime.now()
-            data.append([ct,product_url_og,product_name,model_no,product_price,discount_perc,soldby,rating,p_rating,currency,shipping_fee,position,brand,market_place,stocks_left])
-            print(i)
+            data.append([ct,product_url_og,product_name,model_no,price[4:10],discount_perc,soldby,rating,p_rating,currency[0:3],position,brand,market_place])
+
 
            
         except:
             print("error occured")
     
-    print("end of inner loop:",i)
 
-df = pd.DataFrame(data, columns=['time', 'product url', 'product name','model no','selling price','discount%','seller','seller raitng','product rating','currency','shipping fee','position','brand','market','stocks left'])
-df.to_csv('books.csv')
+
+df = pd.DataFrame(data, columns=['time', 'product url', 'product name','model no','selling price','discount%','seller','seller raitng','product rating','currency','position','brand','market'])
+df.to_csv('noon_web.csv')
 
 
 
